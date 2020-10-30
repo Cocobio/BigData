@@ -1,5 +1,5 @@
-#ifndef COUNT_MIN
-#define COUNT_MIN
+#ifndef COUNT_MIN_CU
+#define COUNT_MIN_CU
 
 #include <cmath>
 #include <vector>
@@ -15,7 +15,7 @@ using namespace std;
 
 // Frequent estimator
 template <class T, class C=size_t>
-class CountMin {
+class CountMinCu {
 	typedef T 		stream_value;
 
 private:
@@ -26,7 +26,7 @@ private:
 	unsigned* hash_seed;
 
 public:
-	CountMin(size_t hash_n, size_t table_width, function<size_t(stream_value,unsigned)> h) {
+	CountMinCu(size_t hash_n, size_t table_width, function<size_t(stream_value,unsigned)> h) {
 		srand(time(0));
 		d = hash_n;
 		w = table_width;
@@ -44,7 +44,7 @@ public:
 		hash = h;
 	}
 
-	CountMin(double epsilon, double delta, function<size_t(stream_value,unsigned)> h) {
+	CountMinCu(double epsilon, double delta, function<size_t(stream_value,unsigned)> h) {
 		srand(time(0));
 		d = log(1.0/delta);
 		w = exp(1)/epsilon;
@@ -62,7 +62,7 @@ public:
 		hash = h;
 	}
 
-	~CountMin() {
+	~CountMinCu() {
 		free(c[0]);
 		free(c);
 		free(hash_seed);
@@ -76,28 +76,28 @@ public:
 
 // Heavy Hitters
 template <class T, class C=size_t>
-class CountMin_HH {
+class CountMinCu_HH {
 	typedef T 		stream_value;
 
 private:
 	size_t K;
 	AssociativeHeap<stream_value,size_t,vector<pair<size_t,stream_value>>, greater<pair<size_t,stream_value>>> AH;
-	CountMin<T,C> cm;
+	CountMinCu<T,C> cm;
 
 public:
-	CountMin_HH(size_t k, size_t hash_n, size_t table_width, function<size_t(stream_value,unsigned)> h) : cm(hash_n, table_width, h) {
+	CountMinCu_HH(size_t k, size_t hash_n, size_t table_width, function<size_t(stream_value,unsigned)> h) : cm(hash_n, table_width, h) {
 		K = k;
 	}
 
-	CountMin_HH(size_t k, double epsilon, double delta, function<size_t(stream_value,unsigned)> h) : cm(epsilon, delta, h) {
+	CountMinCu_HH(size_t k, double epsilon, double delta, function<size_t(stream_value,unsigned)> h) : cm(epsilon, delta, h) {
 		K = k;
 	}
 
-	CountMin_HH(double phi, size_t hash_n, size_t table_width, function<size_t(stream_value,unsigned)> h) : cm(hash_n, table_width, h) {
+	CountMinCu_HH(double phi, size_t hash_n, size_t table_width, function<size_t(stream_value,unsigned)> h) : cm(hash_n, table_width, h) {
 		K = ceil(1/phi)-1;
 	}
 
-	CountMin_HH(double phi, double epsilon, double delta, function<size_t(stream_value,unsigned)> h) : cm(epsilon, delta, h) {
+	CountMinCu_HH(double phi, double epsilon, double delta, function<size_t(stream_value,unsigned)> h) : cm(epsilon, delta, h) {
 		K = ceil(1/phi)-1;
 	}
 
@@ -107,6 +107,6 @@ public:
 	vector<pair<stream_value,size_t>> topK();
 };
 
-#include "countmin.cpp"
+#include "countmincu.cpp"
 
 #endif

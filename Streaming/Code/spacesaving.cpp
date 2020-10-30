@@ -25,6 +25,7 @@ void SpaceSaving<T>::update(stream_value v, size_t c) {
 template<class T>
 vector<pair<T,size_t>> SpaceSaving<T>::topK() {
 	vector<pair<stream_value,size_t>> topk;
+	topk.reserve(K);
 
 	for(auto it = AH.heap_cbegin(); it!=AH.heap_cend(); it++)
 		topk.push_back(make_pair(it->second,it->first));

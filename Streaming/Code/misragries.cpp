@@ -30,6 +30,7 @@ void MisraGries<T>::update(stream_value v, size_t c) {
 template<class T>
 vector<pair<T,size_t>> MisraGries<T>::topK() {
 	vector<pair<stream_value,size_t>> topk;
+	topk.reserve(K);
 
 	for(auto it = AH.heap_cbegin(); it!=AH.heap_cend(); it++)
 		if (it->first!=0)

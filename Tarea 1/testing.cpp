@@ -12,6 +12,7 @@
 #include "../Streaming/Code/MisraGries.hpp"
 #include "../Streaming/Code/SpaceSaving.hpp"
 #include "../Streaming/Code/CountMin.hpp"
+#include "../Streaming/Code/CountMinCu.hpp"
 
 #include "murmur3.h"
 
@@ -24,35 +25,35 @@ void readDNA(string file);
 void kmers(map<string,size_t> &fr, string &chain, int k);
 
 int main(int argn, char **argsv) {
-	srand(time(0));
-	string test = "AAATC";
+	// srand(time(0));
+	// string test = "AAATC";
 
-	unsigned char buffer[16];
+	// unsigned char buffer[16];
 
-	unsigned seed = rand();
+	// unsigned seed = rand();
 
-	MurmurHash3_x64_128(test.data(), test.size(), seed, buffer);
+	// MurmurHash3_x64_128(test.data(), test.size(), seed, buffer);
 
-	for (int i=0; i<16; i++)
-		cout << buffer[i] << " ";
-	cout << endl;	MurmurHash3_x64_128(test.data(), test.size(), seed, buffer);
-	cout << *((unsigned long long*) buffer) << endl;
+	// for (int i=0; i<16; i++)
+	// 	cout << buffer[i] << " ";
+	// cout << endl;	MurmurHash3_x64_128(test.data(), test.size(), seed, buffer);
+	// cout << *((unsigned long long*) buffer) << endl;
 
-	for (int i=0; i<16; i++)
-		cout << buffer[i] << " ";
-	cout << endl;	MurmurHash3_x64_128(test.data(), test.size(), seed, buffer);
-	cout << *((unsigned long long*) buffer) << endl;
-	test[0] = 'T';
-	for (int i=0; i<16; i++)
-		cout << buffer[i] << " ";
-	cout << endl;	MurmurHash3_x64_128(test.data(), test.size(), seed, buffer);
-	cout << *((unsigned long long*) buffer) << endl;
+	// for (int i=0; i<16; i++)
+	// 	cout << buffer[i] << " ";
+	// cout << endl;	MurmurHash3_x64_128(test.data(), test.size(), seed, buffer);
+	// cout << *((unsigned long long*) buffer) << endl;
+	// test[0] = 'T';
+	// for (int i=0; i<16; i++)
+	// 	cout << buffer[i] << " ";
+	// cout << endl;	MurmurHash3_x64_128(test.data(), test.size(), seed, buffer);
+	// cout << *((unsigned long long*) buffer) << endl;
 
-	for (int i=0; i<16; i++)
-		cout << buffer[i] << " ";
-	cout << endl;
+	// for (int i=0; i<16; i++)
+	// 	cout << buffer[i] << " ";
+	// cout << endl;
 
-	cout << *((unsigned long long*) buffer) << endl;
+	// cout << *((unsigned long long*) buffer) << endl;
 	
 	for (int i=1; i<argn; i++) {
 		cout << argsv[i] << endl;
@@ -91,19 +92,25 @@ int main(int argn, char **argsv) {
 }
 
 void readDNA(string file) {
-	int k=10;
+	int k=3;
 	string tmp;
 
 	fstream f(file);
 
 	map<string,size_t> fr;
-	SpaceSaving<string> mg_topk(300);
+	auto h = [](string v, unsigned s) {
+		unsigned char buffer[16];
+		MurmurHash3_x64_128(v.data(), v.size(), s, buffer);
+		return *((unsigned long long*) buffer);
+	};
+	CountMinCu_HH<string,unsigned> mg_topk(size_t(300u), size_t(5u), size_t(1000u), h);
+	// SpaceSaving<string> mg_topk(size_t(300u));
 
 	auto start = clock();
 
 	f.ignore(10000, '\n');
 	while(getline(f,tmp)) {
-		// kmers(fr,tmp,k);
+		kmers(fr,tmp,k);
 		for (int i=0; i<tmp.size()-k; i++)
 			mg_topk.update(tmp.substr(i,k));
 
@@ -111,24 +118,26 @@ void readDNA(string file) {
 		f.ignore(10000, '\n');
 		f.ignore(10000, '\n');
 
-		// break;
+		break;
 	}
 	f.close();
 
 	cout << "time taken: " << ((double)clock() - start)/CLOCKS_PER_SEC << endl;
 
-	// cout << "Real:" << endl;
-	// vector<pair<string,size_t>> fr_v(fr.begin(),fr.end());
-	// sort(fr_v.begin(),fr_v.end(),[](pair<string,size_t> a, pair<string,size_t> b){ return a.second > b.second; });
-	// if (fr_v.size() > 200) fr_v.resize(200);
-	// for (auto &p:fr_v)
-	// 	cout << p.first << "  " << p.second << endl;
-
-	cout << "SpaceSaving" << endl;
-	vector<pair<string,size_t>> fr_v(mg_topk.topK());
+	cout << "Real:" << endl;
+	vector<pair<string,size_t>> fr_v(fr.begin(),fr.end());
 	sort(fr_v.begin(),fr_v.end(),[](pair<string,size_t> a, pair<string,size_t> b){ return a.second > b.second; });
+	if (fr_v.size() > 200) fr_v.resize(200);
 	for (auto &p:fr_v)
 		cout << p.first << "  " << p.second << endl;
+
+	cout << "SpaceSaving" << endl;
+	vector<pair<string,size_t>> fr_v2(mg_topk.topK());
+	sort(fr_v2.begin(),fr_v2.end(),[](pair<string,size_t> a, pair<string,size_t> b){ return a.second > b.second; });
+	for (auto &p:fr_v2)
+		cout << p.first << "  " << p.second << endl;
+
+	cout << "done" << endl;
 }
 
 void kmers(map<string,size_t> &fr, string &chain, int k) {
