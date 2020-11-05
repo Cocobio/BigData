@@ -92,18 +92,26 @@ int main(int argn, char **argsv) {
 }
 
 void readDNA(string file) {
-	int k=30;
+	int k=40;
 	string tmp;
 
 	fstream f(file);
 
-	map<string,size_t> fr;
-	auto h = [](string v, unsigned s) {
+	// map<string,size_t> fr;
+	// auto h = [](string v, unsigned s) {
+	// 	unsigned char buffer[16];
+	// 	MurmurHash3_x64_128(v.data(), v.size(), s, buffer);
+	// 	return *((unsigned long long*) buffer);
+	// };
+
+	// CountMinCu_HH<string,unsigned> mg_topk(size_t(300u), size_t(5u), size_t(1000u), h);
+
+	auto h = [k](char* v, unsigned s) {
 		unsigned char buffer[16];
-		MurmurHash3_x64_128(v.data(), v.size(), s, buffer);
+		MurmurHash3_x64_128(v, k, s, buffer);
 		return *((unsigned long long*) buffer);
 	};
-	CountMinCu_HH<string,unsigned> mg_topk(size_t(300u), size_t(5u), size_t(1000u), h);
+	CountMinCu_HH<My_kmer,unsigned> mg_topk(size_t(300u), size_t(5u), size_t(1000u), h);
 	// SpaceSaving<string> mg_topk(size_t(300u));
 
 	auto start = clock();
@@ -111,8 +119,8 @@ void readDNA(string file) {
 	f.ignore(10000, '\n');
 	while(getline(f,tmp)) {
 		kmers(fr,tmp,k);
-		// for (int i=0; i<tmp.size()-k; i++)
-		// 	mg_topk.update(tmp.substr(i,k));
+		for (int i=0; i<tmp.size()-k; i++)
+			mg_topk.update(tmp.data()+i);
 
 		f.ignore(10000, '\n');
 		f.ignore(10000, '\n');
@@ -129,11 +137,11 @@ void readDNA(string file) {
 	for (auto &p:fr_v)
 		cout << p.first << "  " << p.second << endl;
 
-	// cout << "SpaceSaving" << endl;
-	// vector<pair<string,size_t>> fr_v2(mg_topk.topK());
-	// sort(fr_v2.begin(),fr_v2.end(),[](pair<string,size_t> a, pair<string,size_t> b){ return a.second > b.second; });
-	// for (auto &p:fr_v2)
-	// 	cout << p.first << "  " << p.second << endl;
+	cout << "SpaceSaving" << endl;
+	vector<pair<string,size_t>> fr_v2(mg_topk.topK());
+	sort(fr_v2.begin(),fr_v2.end(),[](pair<string,size_t> a, pair<string,size_t> b){ return a.second > b.second; });
+	for (auto &p:fr_v2)
+		cout << p.first << "  " << p.second << endl;
 
 	cout << "done" << endl;
 }
