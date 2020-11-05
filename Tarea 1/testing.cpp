@@ -92,7 +92,7 @@ int main(int argn, char **argsv) {
 }
 
 void readDNA(string file) {
-	int k=20;
+	int k=30;
 	string tmp;
 
 	fstream f(file);
