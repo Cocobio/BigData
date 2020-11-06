@@ -21,6 +21,8 @@
 
 using namespace std;
 
+// 392400288    40-mers
+
 void readDNA(string file);
 void kmers(map<string,size_t> &fr, string &chain, int k);
 
@@ -92,7 +94,7 @@ int main(int argn, char **argsv) {
 }
 
 void readDNA(string file) {
-	int k=40;
+	int k=20;
 	string tmp;
 
 	fstream f(file);
@@ -107,6 +109,9 @@ void readDNA(string file) {
 	// SpaceSaving<string> mg_topk(size_t(300u));
 
 	auto start = clock();
+	unsigned counter = 0;
+	unsigned cc = 0;
+	size_t cc2 = 0;
 
 	f.ignore(10000, '\n');
 	while(getline(f,tmp)) {
@@ -114,18 +119,28 @@ void readDNA(string file) {
 		// for (int i=0; i<tmp.size()-k; i++)
 		// 	mg_topk.update(tmp.substr(i,k));
 
+		// for (int i=0; i<tmp.size()-k; i++) {
+
+		// 	cc2++;
+		// 	if (strncmp(tmp.data()+i,"TTTTTTTTTTTTTTTTTTTT",k)==0) cc++;
+		// }
+		// counter += tmp.size()-k;
 		f.ignore(10000, '\n');
 		f.ignore(10000, '\n');
 		f.ignore(10000, '\n');
 	}
 	f.close();
 
+	// cout << "counter: " << counter << endl;
+	// cout << "cc2: " << cc2 << endl;
+	// cout << "cc: " << cc << endl;
+
 	cout << "time taken: " << ((double)clock() - start)/CLOCKS_PER_SEC << endl;
 
 	cout << "Real:" << endl;
 	vector<pair<string,size_t>> fr_v(fr.begin(),fr.end());
 	sort(fr_v.begin(),fr_v.end(),[](pair<string,size_t> a, pair<string,size_t> b){ return a.second > b.second; });
-	if (fr_v.size() > 200) fr_v.resize(200);
+	// if (fr_v.size() > 200) fr_v.resize(200);
 	for (auto &p:fr_v)
 		cout << p.first << "  " << p.second << endl;
 

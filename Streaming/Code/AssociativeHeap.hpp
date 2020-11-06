@@ -6,7 +6,7 @@
 #include <utility>
 #include <algorithm>
 
-template<class K, class T = int, class Container = std::vector<std::pair<size_t,K>>, class Compare = std::less<typename Container::value_type>>
+template<class K, class T = int, class Container = std::vector<std::pair<T,K>>, class Compare = std::less<typename Container::value_type>>
 class AssociativeHeap {
 	typedef T	value_type;
 	typedef K	key_type;
