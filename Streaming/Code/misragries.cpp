@@ -36,6 +36,9 @@ vector<pair<T,size_t>> MisraGries<T>::topK() {
 		if (it->first!=0)
 			topk.push_back(make_pair(it->second,it->first));
 
+	auto comp = [](pair<stream_value,size_t> a, pair<stream_value,size_t> b) { return a.second>b.second; };
+	sort(topk.begin(), topk.end(), comp);
+
 	return topk;
 }
 

@@ -105,23 +105,28 @@ void readDNA(string file) {
 		MurmurHash3_x64_128(v.data(), v.size(), s, buffer);
 		return *((unsigned long long*) buffer);
 	};
-	CountMinCu_HH<string,unsigned> mg_topk(size_t(300u), size_t(5u), size_t(1000u), h);
-	// SpaceSaving<string> mg_topk(size_t(300u));
+	// CountMinCu_HH<string,unsigned> mg_topk(size_t(300u), size_t(5u), size_t(1000u), h);
+	MisraGries<string> mg_topk(size_t(150000u));
 
 	auto start = clock();
 	unsigned counter = 0;
 	unsigned cc = 0;
 	size_t cc2 = 0;
+	double t2 = 0;
 
 	f.ignore(10000, '\n');
 	while(getline(f,tmp)) {
-		kmers(fr,tmp,k);
-		// for (int i=0; i<tmp.size()-k; i++)
-		// 	mg_topk.update(tmp.substr(i,k));
+		// kmers(fr,tmp,k);
+		for (int i=0; i<tmp.size()-k; i++) {
+			string subsequence = tmp.substr(i,k);
+			auto start2 = clock();
+			mg_topk.update(subsequence);
+			t2+= ((double)clock() - start2)/CLOCKS_PER_SEC;
+			cc2++;
+		}
 
 		// for (int i=0; i<tmp.size()-k; i++) {
 
-		// 	cc2++;
 		// 	if (strncmp(tmp.data()+i,"TTTTTTTTTTTTTTTTTTTT",k)==0) cc++;
 		// }
 		// counter += tmp.size()-k;
@@ -137,18 +142,19 @@ void readDNA(string file) {
 
 	cout << "time taken: " << ((double)clock() - start)/CLOCKS_PER_SEC << endl;
 
-	cout << "Real:" << endl;
-	vector<pair<string,size_t>> fr_v(fr.begin(),fr.end());
-	sort(fr_v.begin(),fr_v.end(),[](pair<string,size_t> a, pair<string,size_t> b){ return a.second > b.second; });
-	// if (fr_v.size() > 200) fr_v.resize(200);
-	for (auto &p:fr_v)
-		cout << p.first << "  " << p.second << endl;
-
-	// cout << "SpaceSaving" << endl;
-	// vector<pair<string,size_t>> fr_v2(mg_topk.topK());
-	// sort(fr_v2.begin(),fr_v2.end(),[](pair<string,size_t> a, pair<string,size_t> b){ return a.second > b.second; });
-	// for (auto &p:fr_v2)
+	// cout << "Real:" << endl;
+	// vector<pair<string,size_t>> fr_v(fr.begin(),fr.end());
+	// sort(fr_v.begin(),fr_v.end(),[](pair<string,size_t> a, pair<string,size_t> b){ return a.second > b.second; });
+	// // if (fr_v.size() > 200) fr_v.resize(200);
+	// for (auto &p:fr_v)
 	// 	cout << p.first << "  " << p.second << endl;
+
+	cout << "MisraGries" << endl;
+	vector<pair<string,size_t>> fr_v2(mg_topk.topK());
+	sort(fr_v2.begin(),fr_v2.end(),[](pair<string,size_t> a, pair<string,size_t> b){ return a.second > b.second; });
+	for (auto &p:fr_v2)
+		cout << p.first << "  " << p.second << endl;
+	cout << "update time: " << t2/cc2 << endl;
 
 	cout << "done" << endl;
 }
