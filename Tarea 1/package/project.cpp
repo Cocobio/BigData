@@ -3,16 +3,15 @@
 #include <string>
 #include <map>
 
-#include "../Streaming/Code/AssociativeHeap.hpp"
+#include "AssociativeHeap.hpp"
 #include <vector>
 
 #include <unordered_set>
 #include <stdio.h>
-#include <algorithm>
-#include "../Streaming/Code/MisraGries.hpp"
-#include "../Streaming/Code/SpaceSaving.hpp"
-#include "../Streaming/Code/CountMin.hpp"
-#include "../Streaming/Code/CountMinCu.hpp"
+#include "MisraGries.hpp"
+#include "SpaceSaving.hpp"
+#include "CountMin.hpp"
+#include "CountMinCu.hpp"
 
 #include "murmur3.h"
 
@@ -27,6 +26,9 @@ using namespace std;
 
 template<class HHs>
 void processDNA(string file, HHs &hh, int k);
+
+template<class Sketch>
+void time_fr_estimate(Sketch &s);
 
 int main(int argn, char **argsv) {
 	if (argn<4) {
@@ -61,55 +63,61 @@ int main(int argn, char **argsv) {
 	void *HH;
 
 	switch(filter[option]) {
-		case 0:
-		cout << "Misra Gries" << endl;
-		int fr = atoi(argsv[4]);
-		double phi = ((double)fr)/kmers;
+		case 0: {
+			cout << "Misra Gries" << endl;
+			int K = atoi(argsv[4]);
+				
+			MisraGries<string> misra(K);
+			processDNA<MisraGries<string>>(file_path, misra, k);
 		
-		MisraGries<string> misra(phi);
-		processDNA<MisraGries<string>>(file_path, misra, k);
+			for (auto &p:misra.topK())
+				cout << p.first << "  " << p.second << endl;
+			break;
+		}
 
-		for (auto &p:misra.topK())
-			cout << p.first << "  " << p.second << endl;
-		break;
-
-		case 1:
-		cout << "Space Saving" << endl;
-		int fr = atoi(argsv[4]);
-		double phi = ((double)fr)/kmers;
+		case 1: {
+			cout << "Space Saving" << endl;
+			int K = atoi(argsv[4]);
+				
+			SpaceSaving<string> spacesa(K);
+			processDNA<SpaceSaving<string>>(file_path, spacesa, k);
 		
-		SpaceSaving<string> spacesa(phi);
-		processDNA<SpaceSaving<string>>(file_path, spacesa, k);
+			for (auto &p:spacesa.topK())
+				cout << p.first << "  " << p.second << endl;
+			break;
+		}
 
-		for (auto &p:spacesa.topK())
-			cout << p.first << "  " << p.second << endl;
-		break;
+		case 2: {
+			cout << "CountMin" << endl;
+			int w = atoi(argsv[4]);
+			int d = atoi(argsv[5]);
+			int K = atoi(argsv[6]);
+		
+			CountMin_HH<string,unsigned int> cm(size_t(K),size_t(d),size_t(w), h);
+			processDNA(file_path, cm, k);
+		
+			time_fr_estimate(cm);
+		
+			for (auto &p:cm.topK())
+				cout << p.first << "  " << p.second << endl;
+			break;
+		}
 
-		case 2:
-		cout << "CountMin" << endl;
-		int w = atoi(argsv[4]);
-		int d = atoi(argsv[5]);
-		int K = atoi(argsv[6]);
-
-		CountMin_HH<string,unsigned int> cm(size_t(K),size_t(d),size_t(w), h);
-		processDNA(file_path, CountMin_HH(), k);
-
-		for (auto &p:cm.topK())
-			cout << p.first << "  " << p.second << endl;
-		break;
-
-		default:
-		cout << "CountMinCU" << endl;
-		int w = atoi(argsv[4]);
-		int d = atoi(argsv[5]);
-		int K = atoi(argsv[6]);
-
-		CountMinCu_HH<string,unsigned int> cmcu(size_t(K), size_t(d), size_t(w), h);
-		processDNA(file_path, cmcu, k);
-
-		for (auto &p:cmcu.topK())
-			cout << p.first << "  " << p.second << endl;
-		break;
+		default: {
+			cout << "CountMinCU" << endl;
+			int w = atoi(argsv[4]);
+			int d = atoi(argsv[5]);
+			int K = atoi(argsv[6]);
+		
+			CountMinCu_HH<string,unsigned int> cmcu(size_t(K), size_t(d), size_t(w), h);
+			processDNA(file_path, cmcu, k);
+		
+			time_fr_estimate(cmcu);
+		
+			for (auto &p:cmcu.topK())
+				cout << p.first << "  " << p.second << endl;
+			break;
+		}
 	}
 
 	return 0;
@@ -146,5 +154,21 @@ void processDNA(string file, HHs &hh, int k) {
 
 	cout << "Time taken: " << ((double)clock() - start)/CLOCKS_PER_SEC << " [s]" << endl;
 	cout << "Average update time: " << update_t/cc*1000 << " [ms]" << endl;
+}
+
+
+template<class Sketch>
+void time_fr_estimate(Sketch &s) {
+	int cc = 0;
+	double t = 0;
+
+	for (auto &p:s.topK()) {
+		cc++;
+		auto start = clock();
+		s.estimate_frequency(p.first);
+		t += ((double)clock() - start)/CLOCKS_PER_SEC;
+	}
+
+	cout << "Average time for frequency estimation: " << t/cc*1000 << " [ms]" << endl;
 }
 
