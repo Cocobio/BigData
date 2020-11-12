@@ -1,0 +1,2 @@
+Cardinal de ../../Database/ERR626208.fastq con kmers de 20: 269143759
+Time taken: 534.713 [s]
