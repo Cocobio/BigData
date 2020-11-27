@@ -1,3 +1,4 @@
+// nohup ./project -ss ../../../Database/ERR626209.fastq 20 64000 > ERR626208/mg_20mers_k64k.txt &
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -137,7 +138,7 @@ void processDNA(string file, HHs &hh, int k) {
 
 	f.ignore(10000, '\n');
 	while(getline(f,tmp)) {
-		for (int i=0; i<tmp.size()-k; i++) {
+		for (int i=0; i<=tmp.size()-k; i++) {
 			string subsequence = tmp.substr(i,k);
 			auto start2 = clock();
 			hh.update(subsequence);

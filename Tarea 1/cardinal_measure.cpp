@@ -36,7 +36,7 @@ void processDNA(string file, int k, bool print) {
 
 	f.ignore(10000, '\n');
 	while(getline(f,tmp)) {
-		for (int i=0; i<tmp.size()-k; i++) {
+		for (int i=0; i<=tmp.size()-k; i++) {
 			string subsequence = tmp.substr(i,k);
 			cardinal.insert(subsequence);
 		}

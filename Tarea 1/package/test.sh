@@ -59,12 +59,18 @@ mkdir -p $D
 ./project -ss $F 20 200 > $D/ss_20mers_k200.txt
 ./project -ss $F 20 400 > $D/ss_20mers_k400.txt
 ./project -ss $F 20 800 > $D/ss_20mers_k800.txt
+./project -ss $F 20 64000 > $D/ss_20mers_k64k.txt
+./project -ss $F 20 128000 > $D/ss_20mers_k128k.txt
 #
 ./project -ss $F 30 200 > $D/ss_30mers_k200.txt
 ./project -ss $F 30 400 > $D/ss_30mers_k400.txt
 ./project -ss $F 30 800 > $D/ss_30mers_k800.txt
+./project -ss $F 30 64000 > $D/ss_30mers_k64k.txt
+./project -ss $F 30 128000 > $D/ss_30mers_k128k.txt
 #
 ./project -ss $F 40 200 > $D/ss_40mers_k200.txt
 ./project -ss $F 40 400 > $D/ss_40mers_k400.txt
 ./project -ss $F 40 800 > $D/ss_40mers_k800.txt
+./project -ss $F 40 64000 > $D/ss_40mers_k64k.txt
+./project -ss $F 40 128000 > $D/ss_40mers_k128k.txt
 #
