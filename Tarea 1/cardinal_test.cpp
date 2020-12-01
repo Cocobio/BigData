@@ -96,6 +96,7 @@ void processCardinalDNA(string file, C &estimator, int k) {
 	cout << "Time taken: " << ((double)clock() - start)/CLOCKS_PER_SEC << " [s]" << endl;
 	cout << "Average update time: " << update_t/cc*1000 << " [ms]" << endl;
 	cout << "Cardinal estimated: " << estimator.cardinal() << endl;
+	cout << "Space used: " << estimator.size_in_bytes() << " bytes." << endl;
 }
 
 

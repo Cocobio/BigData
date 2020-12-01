@@ -62,3 +62,12 @@ unsigned int LogLog<T>::cardinal() {
 
 	return fc * pow(2,(1.0/m)*sum) * m;
 }
+
+template<class T>
+size_t LogLog<T>::size_in_bytes() {
+	size_t s = sizeof(this);
+
+	s += sizeof(unsigned char)*m;
+
+	return s;
+}

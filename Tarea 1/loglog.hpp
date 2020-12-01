@@ -34,6 +34,7 @@ public:
 	void update(element x_i);
 
 	unsigned int cardinal();
+	size_t size_in_bytes();
 };
 
 #include "loglog.cpp"
