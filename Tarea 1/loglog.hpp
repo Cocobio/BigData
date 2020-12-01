@@ -4,6 +4,7 @@
 #include <cmath>
 #include <cstring>
 #include <algorithm>
+
 #include <functional>
 #include <ctime>
 #include <cstdlib>
@@ -16,7 +17,7 @@ public:
 protected:
 	unsigned char* M;
 	// hash<element> h;
-	function<unsigned(element,unsigned)> hash;
+	std::function<unsigned(element&,unsigned&)> hash;
 	unsigned hash_seed;
 	unsigned char b;
 	unsigned int m; // 2^b
@@ -25,7 +26,7 @@ protected:
 	void fc_table();
 
 public:
-	LogLog(function<unsigned(element,unsigned)> h, int b=4);
+	LogLog(std::function<unsigned(element&,unsigned&)> h, int b=4);
 	~LogLog() {
 		delete[] M;
 	}

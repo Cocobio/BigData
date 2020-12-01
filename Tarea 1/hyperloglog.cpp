@@ -9,9 +9,9 @@ unsigned int HyperLogLog<T>::cardinal() {
 		Z += pow(2,-this->M[i]-1);
 	Z = 1/Z;
 
-	cout << "fc " << this->fc << endl;
-	cout << "m " << this->m << endl;
-	cout << "Z " << Z << endl;
+	// cout << "fc " << this->fc << endl;
+	// cout << "m " << this->m << endl;
+	// cout << "Z " << Z << endl;
 
-	return this->fc*this->m*this->m*Z;
+	return this->fc * this->m*this->m * Z;
 }

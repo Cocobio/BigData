@@ -23,7 +23,7 @@ void LogLog<T>::fc_table() {
 
 
 template <class T>
-LogLog<T>::LogLog(function<unsigned(T,unsigned)> h, int b) {
+LogLog<T>::LogLog(std::function<unsigned(T&,unsigned&)> h, int b) {
 	srand(time(0));
 	hash = h;
 	hash_seed = rand();
@@ -36,22 +36,21 @@ LogLog<T>::LogLog(function<unsigned(T,unsigned)> h, int b) {
 	fc_table();
 }
 
-#include <iostream>
-using namespace std;
+// #include <iostream>
+// using namespace std;
 
 template <class T>
 void LogLog<T>::update(element x_i) {
 	unsigned int hx = hash(x_i, hash_seed);
 	// cout << "input: " << x_i << endl << "hashed: " << hx << endl;
-	size_t i = hx >> (8*sizeof(hx)-b);
+	size_t i = hx & (m-1);
 	// cout << "i: " << i << endl;
-	size_t w = hx & (unsigned(-1) >> b);
+	size_t w = hx >> b;
 	// cout << "w: " << w << endl;
-
 	unsigned char zeros = __builtin_clz(w) - b;
 	// cout << "leading zeros: " << (int)zeros << endl;
 
-	M[i] = max(M[i], zeros);
+	M[i] = std::max(M[i], zeros);
 }
 
 template <class T>
@@ -61,5 +60,5 @@ unsigned int LogLog<T>::cardinal() {
 	for (int i=0; i<m; i++)
 		sum += M[i];
 
-	return fc*pow(2,(1.0/m)*sum)*m;
+	return fc * pow(2,(1.0/m)*sum) * m;
 }
