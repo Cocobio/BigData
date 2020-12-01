@@ -4,14 +4,20 @@
 #include <cmath>
 #include <cstring>
 #include <algorithm>
+#include <functional>
+#include <ctime>
+#include <cstdlib>
 
 template <class T>
 class LogLog {
 public:
 	typedef T		element;
-private:
+	
+protected:
 	unsigned char* M;
 	// hash<element> h;
+	function<unsigned(element,unsigned)> hash;
+	unsigned hash_seed;
 	unsigned char b;
 	unsigned int m; // 2^b
 	float fc;
@@ -19,15 +25,17 @@ private:
 	void fc_table();
 
 public:
-	LogLog(int b=4);
-	~LogLog();
+	LogLog(function<unsigned(element,unsigned)> h, int b=4);
+	~LogLog() {
+		delete[] M;
+	}
 
 	void update(element x_i);
 
-	unsigned int query();
+	unsigned int cardinal();
 };
 
 #include "loglog.cpp"
 
-#ifndef
+#endif
 
