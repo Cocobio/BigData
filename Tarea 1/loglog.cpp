@@ -23,7 +23,7 @@ void LogLog<T>::fc_table() {
 
 
 template <class T>
-LogLog<T>::LogLog(std::function<unsigned(T&,unsigned&)> h, int b) {
+LogLog<T>::LogLog(std::function<hashed(T&,unsigned&)> h, int b) {
 	srand(time(0));
 	hash = h;
 	hash_seed = rand();
@@ -41,13 +41,13 @@ LogLog<T>::LogLog(std::function<unsigned(T&,unsigned&)> h, int b) {
 
 template <class T>
 void LogLog<T>::update(element x_i) {
-	unsigned int hx = hash(x_i, hash_seed);
+	hashed hx = hash(x_i, hash_seed);
 	// cout << "input: " << x_i << endl << "hashed: " << hx << endl;
 	size_t i = hx & (m-1);
 	// cout << "i: " << i << endl;
-	size_t w = hx >> b;
+	hashed w = hx >> b;
 	// cout << "w: " << w << endl;
-	unsigned char zeros = __builtin_clz(w) - b;
+	unsigned char zeros = __builtin_clzll(w) - b;
 	// cout << "leading zeros: " << (int)zeros << endl;
 
 	M[i] = std::max(M[i], zeros);

@@ -12,12 +12,13 @@
 template <class T>
 class LogLog {
 public:
-	typedef T		element;
+	typedef T					element;
+	typedef unsigned long long	hashed;
 	
 protected:
 	unsigned char* M;
 	// hash<element> h;
-	std::function<unsigned(element&,unsigned&)> hash;
+	std::function<hashed(element&,unsigned&)> hash;
 	unsigned hash_seed;
 	unsigned char b;
 	unsigned int m; // 2^b
@@ -26,7 +27,7 @@ protected:
 	void fc_table();
 
 public:
-	LogLog(std::function<unsigned(element&,unsigned&)> h, int b=4);
+	LogLog(std::function<hashed(element&,unsigned&)> h, int b=4);
 	~LogLog() {
 		delete[] M;
 	}

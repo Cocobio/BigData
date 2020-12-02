@@ -39,13 +39,15 @@ int main(int argn, char **argsv) {
 		return *((unsigned long long*) buffer);
 	};
 
-	auto ll = LogLog<int>(h, 7);
-	auto hll = HyperLogLog<int>(h,5);
+	int precission = 14;
+
+	auto ll = LogLog<int>(h, precission);
+	auto hll = HyperLogLog<int>(h,precission);
 	unordered_set<int> measuring_set;
 
 	cout << "Everything ready" << endl;
 
-	for (int i=0; i<1000000; i++) {
+	for (int i=0; i<10000000; i++) {
 		int x = rand();
 		measuring_set.insert(x);
 		// cout << "updating " << x << endl;
@@ -60,8 +62,13 @@ int main(int argn, char **argsv) {
 	auto hll_cardinal = hll.cardinal();
 	auto real_cardinal = measuring_set.size();
 
-	cout << "Estimated LogLog: " << ll.cardinal() << " Error: " << ((int)real_cardinal)-((int)ll_cardinal) << endl;
-	cout << "Estimated HyperLogLog: " << hll_cardinal << " Error: " << ((int)real_cardinal)-((int)hll_cardinal) << endl;
+	auto err_ll = ((int)real_cardinal)-((int)ll_cardinal);
+	auto err_ll_pr = err_ll/((float)real_cardinal);
+	auto err_hll = ((int)real_cardinal)-((int)hll_cardinal);
+	auto err_hll_pr = err_hll/((float)real_cardinal);
+
+	cout << "Estimated LogLog: " << ll.cardinal() << " Error: " << err_ll << " " << err_ll_pr*100 << "%"<< endl;
+	cout << "Estimated HyperLogLog: " << hll_cardinal << " Error: " << err_hll << " " << err_hll_pr*100 << "%" << endl;
 	cout << "Real: " << real_cardinal << endl;
 
 	return 0;
