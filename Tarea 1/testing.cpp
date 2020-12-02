@@ -39,7 +39,7 @@ int main(int argn, char **argsv) {
 		return *((unsigned long long*) buffer);
 	};
 
-	int precission = 14;
+	int precission = 18;
 
 	auto ll = LogLog<int>(h, precission);
 	auto hll = HyperLogLog<int>(h,precission);
