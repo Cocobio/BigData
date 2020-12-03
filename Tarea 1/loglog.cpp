@@ -55,7 +55,7 @@ void LogLog<T>::update(element x_i) {
 
 template <class T>
 unsigned int LogLog<T>::cardinal() {
-	double sum = m;
+	double sum = 0;
 
 	for (int i=0; i<m; i++)
 		sum += M[i];
