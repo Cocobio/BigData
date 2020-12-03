@@ -1,0 +1,6 @@
+Running!
+LogLog
+Time taken: 810.792 [s]
+Average update time: 0.00098389 [ms]
+Cardinal estimated: 490596902
+Space used: 32776 bytes.
