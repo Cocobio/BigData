@@ -1,0 +1,16 @@
+*.pdf
+*sublime-project
+*sublime-workspace
+
+*.jpg
+
+**/__pycache__
+
+*.npy
+
+*.so
+
+*.exe
+*.o
+
+*.png
