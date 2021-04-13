@@ -73,3 +73,30 @@ int main(int argn, char **argsv) {
 
 	return 0;
 }
+
+// #include <unordered_map>
+// #include <vector>
+// #include <utility>
+// #include <list>
+
+// int main() {
+
+// 	int d = 8;
+// 	int w = 64000;
+
+// 	// cout << sizeof(unsigned) << endl;
+// 	// cout << (d*sizeof(unsigned) + d*sizeof(size_t*)+ d*w*sizeof(size_t))/1024.0 << endl;
+
+// 	int K = 64000;
+// 	int kmer = 40;
+
+// 	vector<pair<string,size_t>> heap;
+// 	unordered_map<string,size_t> hash;
+
+// 	hash.reserve(K);
+
+// 	cout << (sizeof(size_t) + K*(sizeof(string)+kmer+sizeof(size_t)))/1024.0 << endl;
+// 	cout << (sizeof(size_t) + sizeof(heap) + 2*K*(sizeof(string)+kmer+sizeof(size_t)) + hash.bucket_count()*sizeof(list<pair<string,size_t>>) + sizeof(hash))/1024.0 << endl;
+
+// 	return 0;
+// }

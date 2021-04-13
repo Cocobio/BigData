@@ -29,7 +29,7 @@ LogLog<T>::LogLog(std::function<hashed(T&,unsigned&)> h, int b) {
 	hash_seed = rand();
 	this->b = b;
 	
-	m = pow(2,b);
+	m = 1<<b;		//pow(2,b);
 	M = new unsigned char[m];
 	memset(M,0,m);
 
